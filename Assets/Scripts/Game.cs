@@ -132,6 +132,9 @@ public class Game : MonoBehaviour
             else
             {
                 Debug.Log("Challenge completed!");
+                StartChallenge(_baseDigits);
+                UIManager.Instance.ChallengeComputerUI.ClearMorse();
+                UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
             }
             _gameSfxPlayer.PlayOneShot(_correctInputSfx);
         }
