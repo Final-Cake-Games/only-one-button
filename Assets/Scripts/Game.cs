@@ -7,6 +7,11 @@ public class Game : MonoBehaviour
     [SerializeField][Range(1,8)] private int _baseDigits = 4;
     [SerializeField][Range(2, 5)] private float _baseDigitTime = 5.0f;
 
+    [SerializeField] private AudioSource _gameSfxPlayer;
+
+    [SerializeField] private AudioClip _correctInputSfx;
+    [SerializeField] private AudioClip _wrongInputSfx;
+
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
         {'0', "-----" },
@@ -60,7 +65,7 @@ public class Game : MonoBehaviour
         _morseCodeArray = _morseCodeDictionary.ToArray();
 
         StartChallenge(_baseDigits);
-        Debug.Log(_currentAlgarismCode[0]);
+        UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
     }
 
     private char GetRandomAlgarism()
@@ -96,12 +101,15 @@ public class Game : MonoBehaviour
         if (_currentMorseCode[_currentMorseIndex] == playerMorse)
         {
             Debug.Log($"Correct input: {playerMorse}");
+            UIManager.Instance.ChallengeComputerUI.UpdatePlayerMorse(playerMorse.ToString());
             MoveToNextCodeStep();
         }
         else
         {
             Debug.Log($"Incorrect input: {playerMorse}");
-            // Reset???
+            _gameSfxPlayer.PlayOneShot(_wrongInputSfx);
+            _currentMorseIndex = 0;
+            UIManager.Instance.ChallengeComputerUI.ClearMorse();
         }
     }
 
@@ -117,12 +125,15 @@ public class Game : MonoBehaviour
             {
                 _currentAlgarismIndex++;
                 UpdateMorseCode(_currentAlgarismIndex);
+                UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+                UIManager.Instance.ChallengeComputerUI.ClearMorse();
                 _currentMorseIndex = 0;
             }
             else
             {
                 Debug.Log("Challenge completed!");
             }
+            _gameSfxPlayer.PlayOneShot(_correctInputSfx);
         }
     }
 
