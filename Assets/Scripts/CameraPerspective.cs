@@ -29,7 +29,16 @@ public class CameraPerspective : MonoBehaviour
 
         // --- Yaw (left/right)
         yRotation += mouseX;
-        yRotation = Mathf.Clamp(yRotation, -45f, 45f); // Limit to ±45 degrees
+        yRotation = Mathf.Clamp(yRotation, -75f, 75f); // Limit to ±75 degrees
         cameraHolder.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+
+        if (Input.GetMouseButtonDown(0)) // 0 = left click
+        {
+            cameraTransform.gameObject.GetComponent<Camera>().fieldOfView = 30; // Zoom in
+        }
+        if (Input.GetMouseButtonUp(0)) // 0 = left click
+        {
+            cameraTransform.gameObject.GetComponent<Camera>().fieldOfView = 60; // Zoom out
+        }
     }
 }
