@@ -886,7 +886,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 849692450}
   _audioSource: {fileID: 349268247}
-  _telegraphTransform: {fileID: 1327371916}
+  _telegraphButton: {fileID: 1327371916}
+  _telegraphRenderer: {fileID: 1728143027}
 --- !u!4 &349268249
 Transform:
   m_ObjectHideFlags: 0
@@ -3189,6 +3190,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694291044}
   m_Mesh: {fileID: 8733429697405204941, guid: fd71a2bb91e27ee42bbbdaa7996ea38b, type: 3}
+--- !u!23 &1728143027 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4683669308469848369, guid: e90260712561f3546968f284886fe861, type: 3}
+  m_PrefabInstance: {fileID: 1637089588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1733601452
 GameObject:
   m_ObjectHideFlags: 0
