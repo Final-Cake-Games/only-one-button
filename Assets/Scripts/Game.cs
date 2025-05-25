@@ -176,6 +176,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator ChallengeCompleted()
     {
+        UpdateScore();
         _gameSfxPlayer.PlayOneShot(_correctInputSfx);
 
         if (_currentAlgarismTime > _minAlgarismTime)
@@ -205,6 +206,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator ChallengeFailed()
     {
+        ResetCurrentScore();
         _gameSfxPlayer.PlayOneShot(_wrongInputSfx);
 
         _currentDigits = 4;
@@ -228,6 +230,23 @@ public class Game : MonoBehaviour
     {
         _currentTime = _currentAlgarismTime * _currentDigits;
         _timer = _currentTime;
+    }
+
+    private void UpdateScore()
+    {
+        _currentScore += 1;
+        UIManager.Instance.InformationComputerUI.SetCurrentScore(_currentScore);
+        if (_currentScore > _successMaxScore)
+        {
+            _successMaxScore = _currentScore;
+            UIManager.Instance.InformationComputerUI.SetMaxScore(_successMaxScore);
+        }
+    }
+
+    private void ResetCurrentScore()
+    {
+        _currentScore = 0;
+        UIManager.Instance.InformationComputerUI.SetCurrentScore(_currentScore);
     }
 
     private IEnumerator TutorialInformation()

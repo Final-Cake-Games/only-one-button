@@ -8,6 +8,8 @@ public class InformationComputerUI : MonoBehaviour
 {
     [SerializeField] private Slider _timerSlider;
     [SerializeField] private TMP_Text _messageText;
+    [SerializeField] private TMP_Text _currentScoreText;
+    [SerializeField] private TMP_Text _maxScoreText;
     [SerializeField] private AudioSource _sosPlayer;
 
     public void SetSliderMaxValue(float value)
@@ -38,5 +40,15 @@ public class InformationComputerUI : MonoBehaviour
         {
             _sosPlayer.Stop();
         }
+    }
+
+    public void SetCurrentScore(int score)
+    {
+        _currentScoreText.text = "crack counter: " + score;
+    }
+
+    public void SetMaxScore(int score)
+    {
+        _maxScoreText.text = "best: " + score;
     }
 }
