@@ -5,6 +5,7 @@ public class ChallengeComputerUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text _currentAlgarism;
     [SerializeField] private TMP_Text _currentMorse;
+    [SerializeField] private TMP_Text _progressText;
     [SerializeField] GameObject _challengeCompletePanel;
     [SerializeField] GameObject _challengeFailedPanel;
 
@@ -14,6 +15,11 @@ public class ChallengeComputerUI : MonoBehaviour
         {
             _currentAlgarism.text = algarism;
         }
+    }
+
+    public void UpdateProgressText(string progress)
+    { 
+        _progressText.text = progress;
     }
 
     public void UpdatePlayerMorse(string morse)

@@ -21,8 +21,9 @@ public class Game : MonoBehaviour
     private bool _isChallengeActive = false;
     private bool _everyOtherRound = false;
     private int _currentDigits = 4;
-    private float _currentTime = 7.0f;
-    private float _timer = 0.0f;
+    private float _currentAlgarismTime = 7.0f;
+    private float _currentTime;
+    private float _timer;
 
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
@@ -79,17 +80,20 @@ public class Game : MonoBehaviour
 
         ResetTimer();
         StartChallenge(_currentDigits);
+        UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+        UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
     }
 
     private void Update()
     {
         if (_isChallengeActive)
         {
-            _timer += Time.deltaTime;
+            _timer -= Time.deltaTime;
+            UIManager.Instance.InformationComputerUI.SetSliderValue(_timer);
         }
 
-        if (_timer >= _currentTime)
+        if (_timer <= 0)
         { 
             _isChallengeActive = false;
             StartCoroutine(ChallengeFailed());
@@ -117,7 +121,6 @@ public class Game : MonoBehaviour
 
     private void UpdateMorseCode(int algarismIndex)
     {
-        Debug.Log(_currentAlgarismCode[_currentAlgarismIndex]);
         _currentMorseCode = new char[_morseCodeDictionary[_currentAlgarismCode[algarismIndex]].Length];
         for (int i = 0; i < _currentMorseCode.Length; i++)
         {
@@ -156,6 +159,7 @@ public class Game : MonoBehaviour
             {
                 _currentAlgarismIndex++;
                 UpdateMorseCode(_currentAlgarismIndex);
+                UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
                 UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
                 UIManager.Instance.ChallengeComputerUI.ClearMorse();
                 _currentMorseIndex = 0;
@@ -174,11 +178,15 @@ public class Game : MonoBehaviour
     {
         _gameSfxPlayer.PlayOneShot(_correctInputSfx);
 
-        _currentTime -= _timeStep;
+        if (_currentAlgarismTime > _minAlgarismTime)
+        {
+            _currentAlgarismTime -= _timeStep;
+        }
         ResetTimer();
 
         UIManager.Instance.ChallengeComputerUI.ClearMorse();
         UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(true);
+        UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
 
         yield return new WaitForSeconds(5f);
         if (_currentDigits < _maxDigits)
@@ -192,6 +200,7 @@ public class Game : MonoBehaviour
         StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(false);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+        UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
     }
 
     private IEnumerator ChallengeFailed()
@@ -199,24 +208,25 @@ public class Game : MonoBehaviour
         _gameSfxPlayer.PlayOneShot(_wrongInputSfx);
 
         _currentDigits = _baseDigits;
-        _currentTime = _baseAlgarismTime;
         _everyOtherRound = false;
         ResetTimer();
 
         UIManager.Instance.ChallengeComputerUI.ClearMorse();
         UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(true);
+        UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
 
         yield return new WaitForSeconds(5f);
         
         StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(false);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+        UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
     }
 
     private void ResetTimer()
-    { 
-        _timer = 0.0f;
-        _currentTime = _baseAlgarismTime * _currentDigits;
+    {
+        _currentTime = _currentAlgarismTime * _currentDigits;
+        _timer = _currentTime;
     }
 
 }
