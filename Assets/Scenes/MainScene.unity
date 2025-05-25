@@ -2082,7 +2082,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 0}
   cameraTransform: {fileID: 0}
-  mouseSensitivity: 100
+  mouseSensitivity: 250
 --- !u!1 &702482389
 GameObject:
   m_ObjectHideFlags: 0
@@ -2332,7 +2332,7 @@ MonoBehaviour:
   _baseAlgarismTime: 7
   _maxDigits: 10
   _minAlgarismTime: 3
-  _timeStep: 0.25
+  _timeStep: 1
   _gameSfxPlayer: {fileID: 849692453}
   _correctInputSfx: {fileID: 8300000, guid: 00c29b413c32de8449f95ec8b99b632c, type: 3}
   _wrongInputSfx: {fileID: 8300000, guid: 75d6ee8ecfbbcc14ea5fbe756370042f, type: 3}

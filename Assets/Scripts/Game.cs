@@ -11,7 +11,7 @@ public class Game : MonoBehaviour
     [SerializeField] private int _maxDigits = 10;
     [SerializeField][Range(1, 4)] private float _minAlgarismTime = 3.0f;
 
-    [SerializeField][Range(1, 4)] private float _timeStep = 0.15f;
+    [SerializeField][Range(1, 4)] private float _timeStep = 0.5f;
 
     [SerializeField] private AudioSource _gameSfxPlayer;
 
@@ -24,6 +24,8 @@ public class Game : MonoBehaviour
     private float _currentAlgarismTime = 10.0f;
     private float _currentTime;
     private float _timer;
+    private int _successMaxScore = 0;
+    private int _currentScore = 0;
 
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
