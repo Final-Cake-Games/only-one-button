@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private float _buttonDownTime = 0.0f;
 
     [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private Transform _telegraphTransform;
 
     private void Update()
     {
@@ -15,12 +16,14 @@ public class Player : MonoBehaviour
         {
             _playerButtonDown = true;
             _audioSource.Play();
+            _telegraphTransform.localRotation = Quaternion.Euler(-67.9f, 0, 0); // Rotate telegraph to indicate button press
         }
 
         if (Input.GetButtonUp("Jump"))
         {
             _playerButtonDown = false;
             _audioSource.Stop();
+            _telegraphTransform.localRotation = Quaternion.Euler(-89.98f, 0, 0);
 
             if (_buttonDownTime <= 0.2f)
             {
