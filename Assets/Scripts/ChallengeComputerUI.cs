@@ -5,6 +5,7 @@ public class ChallengeComputerUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text _currentAlgarism;
     [SerializeField] private TMP_Text _currentMorse;
+    [SerializeField] GameObject _challengeCompletePanel;
 
     public void UpdateAlgarism(string algarism)
     {
@@ -28,5 +29,10 @@ public class ChallengeComputerUI : MonoBehaviour
         {
             _currentMorse.text = "";
         }
+    }
+
+    public void ToggleCompleteNotice(bool flag)
+    {
+        _challengeCompletePanel.SetActive(flag);
     }
 }

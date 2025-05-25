@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.Linq;
 
@@ -11,6 +12,8 @@ public class Game : MonoBehaviour
 
     [SerializeField] private AudioClip _correctInputSfx;
     [SerializeField] private AudioClip _wrongInputSfx;
+
+    private bool _isChallengeActive = false;
 
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
@@ -84,6 +87,7 @@ public class Game : MonoBehaviour
         UpdateMorseCode(0);
         _currentAlgarismIndex = 0;
         _currentMorseIndex = 0;
+        _isChallengeActive = true;
     }
 
     private void UpdateMorseCode(int algarismIndex)
@@ -98,6 +102,8 @@ public class Game : MonoBehaviour
 
     public void CompareInputToCurrentMorse(char playerMorse)
     {
+        if (_isChallengeActive == false) return;
+        
         if (_currentMorseCode[_currentMorseIndex] == playerMorse)
         {
             Debug.Log($"Correct input: {playerMorse}");
@@ -132,13 +138,23 @@ public class Game : MonoBehaviour
             else
             {
                 Debug.Log("Challenge completed!");
-                StartChallenge(_baseDigits);
-                UIManager.Instance.ChallengeComputerUI.ClearMorse();
-                UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+                _isChallengeActive = false;
+                StartCoroutine(ChallengeCompleted());
             }
-            _gameSfxPlayer.PlayOneShot(_correctInputSfx);
+            
         }
     }
 
+    private IEnumerator ChallengeCompleted()
+    {
+        _gameSfxPlayer.PlayOneShot(_correctInputSfx);
+        UIManager.Instance.ChallengeComputerUI.ClearMorse();
+        UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(true);
+
+        yield return new WaitForSeconds(5f);
+        StartChallenge(_baseDigits);
+        UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(false);
+        UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+    }
 
 }
