@@ -6,7 +6,7 @@ using System.Linq;
 public class Game : MonoBehaviour
 {
     [SerializeField] private int _baseDigits = 4;
-    [SerializeField][Range(5, 12)] private float _baseAlgarismTime = 7.0f;
+    [SerializeField][Range(5, 12)] private float _baseAlgarismTime = 10.0f;
 
     [SerializeField] private int _maxDigits = 10;
     [SerializeField][Range(1, 4)] private float _minAlgarismTime = 3.0f;
@@ -21,7 +21,7 @@ public class Game : MonoBehaviour
     private bool _isChallengeActive = false;
     private bool _everyOtherRound = false;
     private int _currentDigits = 4;
-    private float _currentAlgarismTime = 7.0f;
+    private float _currentAlgarismTime = 10.0f;
     private float _currentTime;
     private float _timer;
 
@@ -77,23 +77,21 @@ public class Game : MonoBehaviour
         _morseCodeArray = new KeyValuePair<char, string>[_morseCodeDictionary.Count];
         _morseCodeArray = _morseCodeDictionary.ToArray();
 
-
         ResetTimer();
-        StartChallenge(_currentDigits);
-        UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
-        UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
-        UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
+
+        StartCoroutine(StartGame());
     }
 
     private void Update()
     {
+        Debug.Log(_timer);
         if (_isChallengeActive)
         {
             _timer -= Time.deltaTime;
             UIManager.Instance.InformationComputerUI.SetSliderValue(_timer);
         }
 
-        if (_timer <= 0)
+        if (_timer <= 0 && _isChallengeActive)
         { 
             _isChallengeActive = false;
             StartCoroutine(ChallengeFailed());
@@ -207,7 +205,8 @@ public class Game : MonoBehaviour
     {
         _gameSfxPlayer.PlayOneShot(_wrongInputSfx);
 
-        _currentDigits = _baseDigits;
+        _currentDigits = 4;
+        _currentAlgarismTime = 10.0f;
         _everyOtherRound = false;
         ResetTimer();
 
@@ -227,6 +226,36 @@ public class Game : MonoBehaviour
     {
         _currentTime = _currentAlgarismTime * _currentDigits;
         _timer = _currentTime;
+    }
+
+    private IEnumerator TutorialInformation()
+    {
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("are you SLEEPING again?! (SPACE-BAR to continue) -Agend Ted"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("i need you AWAKE im going to need your HELP"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("look at your TELEGRAPH its to your RIGHT on your DESK"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("you will use it to SEND me the CODES so i can exit safely"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("LOOK at it and TAP SPACE-BAR for DOT(.) or HOLD SPACE-BAR for DASH(-)"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("if you forgot morse code somehow you can look at your LEFT at the REFERENCE MONITOR"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("LEFT MOUSE BUTTON allows you to zoom in i know youre getting old"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
+
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("ok im at door tm_23x i need the code to get through"));
+        
+    }
+
+    private IEnumerator StartGame()
+    {
+        yield return StartCoroutine(TutorialInformation());
+        StartChallenge(_currentDigits);
+        UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
+        UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+        UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
     }
 
 }
