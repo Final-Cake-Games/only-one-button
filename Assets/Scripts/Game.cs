@@ -5,8 +5,13 @@ using System.Linq;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField][Range(1,8)] private int _baseDigits = 4;
-    [SerializeField][Range(2, 5)] private float _baseDigitTime = 5.0f;
+    [SerializeField] private int _baseDigits = 4;
+    [SerializeField][Range(5, 12)] private float _baseAlgarismTime = 7.0f;
+
+    [SerializeField] private int _maxDigits = 10;
+    [SerializeField][Range(1, 4)] private float _minAlgarismTime = 3.0f;
+
+    [SerializeField][Range(1, 4)] private float _timeStep = 0.15f;
 
     [SerializeField] private AudioSource _gameSfxPlayer;
 
@@ -14,6 +19,10 @@ public class Game : MonoBehaviour
     [SerializeField] private AudioClip _wrongInputSfx;
 
     private bool _isChallengeActive = false;
+    private bool _everyOtherRound = false;
+    private int _currentDigits = 4;
+    private float _currentTime = 7.0f;
+    private float _timer = 0.0f;
 
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
@@ -67,8 +76,24 @@ public class Game : MonoBehaviour
         _morseCodeArray = new KeyValuePair<char, string>[_morseCodeDictionary.Count];
         _morseCodeArray = _morseCodeDictionary.ToArray();
 
-        StartChallenge(_baseDigits);
+
+        ResetTimer();
+        StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+    }
+
+    private void Update()
+    {
+        if (_isChallengeActive)
+        {
+            _timer += Time.deltaTime;
+        }
+
+        if (_timer >= _currentTime)
+        { 
+            _isChallengeActive = false;
+            StartCoroutine(ChallengeFailed());
+        }
     }
 
     private char GetRandomAlgarism()
@@ -148,13 +173,50 @@ public class Game : MonoBehaviour
     private IEnumerator ChallengeCompleted()
     {
         _gameSfxPlayer.PlayOneShot(_correctInputSfx);
+
+        _currentTime -= _timeStep;
+        ResetTimer();
+
         UIManager.Instance.ChallengeComputerUI.ClearMorse();
         UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(true);
 
         yield return new WaitForSeconds(5f);
-        StartChallenge(_baseDigits);
+        if (_currentDigits < _maxDigits)
+        {
+            if (_everyOtherRound)
+            { 
+                _currentDigits += 1;
+            }
+        }
+        _everyOtherRound = !_everyOtherRound;
+        StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(false);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+    }
+
+    private IEnumerator ChallengeFailed()
+    {
+        _gameSfxPlayer.PlayOneShot(_wrongInputSfx);
+
+        _currentDigits = _baseDigits;
+        _currentTime = _baseAlgarismTime;
+        _everyOtherRound = false;
+        ResetTimer();
+
+        UIManager.Instance.ChallengeComputerUI.ClearMorse();
+        UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(true);
+
+        yield return new WaitForSeconds(5f);
+        
+        StartChallenge(_currentDigits);
+        UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(false);
+        UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
+    }
+
+    private void ResetTimer()
+    { 
+        _timer = 0.0f;
+        _currentTime = _baseAlgarismTime * _currentDigits;
     }
 
 }
