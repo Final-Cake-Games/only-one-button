@@ -27,6 +27,60 @@ public class Game : MonoBehaviour
     private int _successMaxScore = 0;
     private int _currentScore = 0;
 
+    string[] maleFirstNames = new string[]
+    {
+        "blorp",
+        "snorb",
+        "jeffro",
+        "mungus",
+        "flibbert",
+        "doobus",
+        "zorp",
+        "wumbus",
+        "gleebo",
+        "fartz",
+        "crungle",
+        "beepo",
+        "tooter",
+        "snazz",
+        "grumbo",
+        "boingo",
+        "niblet",
+        "sporko",
+        "dweebus",
+        "klomp",
+        "goober",
+        "yeebo",
+        "bort",
+        "stank",
+        "pibbs",
+        "wiggly",
+        "fleb",
+        "nubbins",
+        "morb",
+        "twongo",
+        "chungy",
+        "thud",
+        "lork",
+        "drippo",
+        "glorp",
+        "scrumbo",
+        "bingus",
+        "noodle",
+        "gobbo",
+        "woggles",
+        "tronk",
+        "grib",
+        "zingo",
+        "honk",
+        "clumbo",
+        "yabbo",
+        "snitchy",
+        "drogg",
+        "glarb",
+        "twizz"
+    };
+
     private Dictionary<char, string> _morseCodeDictionary = new Dictionary<char, string>()
     {
         {'0', "-----" },
@@ -198,6 +252,7 @@ public class Game : MonoBehaviour
             }
         }
         _everyOtherRound = !_everyOtherRound;
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage($"this is agent {maleFirstNames[Random.Range(0, maleFirstNames.Length)]} im at a door i need the code to get through"));
         StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.ToggleCompleteNotice(false);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
@@ -218,8 +273,10 @@ public class Game : MonoBehaviour
         UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(true);
         UIManager.Instance.InformationComputerUI.SetSliderMaxValue(_currentTime);
 
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("tell my wife i love her"));
         yield return new WaitForSeconds(5f);
-        
+
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage($"this is agent {maleFirstNames[Random.Range(0, maleFirstNames.Length)]} im at a door i need the code to get through"));
         StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.ToggleFailedNotice(false);
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
@@ -251,28 +308,28 @@ public class Game : MonoBehaviour
 
     private IEnumerator TutorialInformation()
     {
-        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("are you SLEEPING again?! (SPACE-BAR to continue) -Agend Ted"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("are you SLEEPING again?! (SPACE-BAR to continue)"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
-        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("i need you AWAKE im going to need your HELP"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("we need you AWAKE were going to need your HELP"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
         yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("look at your TELEGRAPH its to your RIGHT on your DESK"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
-        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("you will use it to SEND me the CODES so i can exit safely"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("agents will require your service to CRACK CODES and send them to us through morse"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
         yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("LOOK at it and TAP SPACE-BAR for DOT(.) or HOLD SPACE-BAR for DASH(-)"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
         yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("if you forgot morse code somehow you can look at your LEFT at the REFERENCE MONITOR"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
-        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("LEFT MOUSE BUTTON allows you to zoom in i know youre getting old"));
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("LEFT MOUSE BUTTON allows you to zoom in we know youre getting old"));
         yield return new WaitUntil(() => Input.GetButtonDown("Jump"));
-
-        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("ok im at door tm_23x i need the code to get through"));
-        
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage("you will see the digits to send us trough your RIGHT monitor good luck"));
+        yield return new WaitUntil(() => Input.GetButtonDown("Jump"));        
     }
 
     private IEnumerator StartGame()
     {
         yield return StartCoroutine(TutorialInformation());
+        yield return StartCoroutine(UIManager.Instance.InformationComputerUI.ReceiveMessage($"this is agent {maleFirstNames[Random.Range(0, maleFirstNames.Length)]} im at a door i need the code to get through"));
         StartChallenge(_currentDigits);
         UIManager.Instance.ChallengeComputerUI.UpdateProgressText($"{_currentAlgarismIndex + 1}/{_currentDigits}");
         UIManager.Instance.ChallengeComputerUI.UpdateAlgarism(_currentAlgarismCode[_currentAlgarismIndex].ToString());
